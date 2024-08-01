@@ -1,4 +1,4 @@
-# Junos FPC Errors
+# Junos Log Scanner 
 
 This repository contains a containerized program for scanning logs for Junos FPC errors.
 
