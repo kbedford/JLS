@@ -6,6 +6,22 @@ The Junos Log Scanner is a comprehensive containerized solution designed to moni
 
 ![image](https://github.com/user-attachments/assets/d24024e4-e8fa-4cfd-986f-707642103726)
 
+# Components
+
+1.	Logstash: Logstash receives syslog messages from Juniper routers and converts them into a structured JSON format. This allows for easy parsing and pattern matching by the Python   script.
+
+2.	PostgreSQL Database: The database serves two primary tables:
+•	Error patterns: Stores predefined error patterns to be matched against incoming syslog messages.
+•	Syslog hits: Stores log entries that match the predefined error patterns, including additional metadata for further analysis.
+
+3.	Junos Log Scanner ( Python Script - syslog_hits.py): This script continuously scans the log files within logstash, matches log entries against predefined patterns, and inserts matching entries into the syslog_hits table in the PostgreSQL database.
+
+4.	Grafana: Grafana is used to visualize the data stored in the PostgreSQL database. It provides an intuitive interface to view recent syslog hits and error patterns, as shown in the attached image.
+
+5.	Robot Framework Tests: These tests ensure the system's proper functioning by verifying database connectivity, table existence, and the presence of matched patterns in the database.
+
+
+
 ## Prerequisites
 
 - Docker and docker-compose needs to be installed on your machine
