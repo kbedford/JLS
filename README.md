@@ -4,6 +4,8 @@ This repository contains a containerized program for scanning logs for Junos FPC
 
 The Junos Log Scanner is a comprehensive containerized solution designed to monitor, analyze, and report syslog messages from Juniper routers. It employs a combination of Python scripts, PostgreSQL databases, Logstash, and Grafana to capture, process, and visualize log data, facilitating the timely identification and resolution of network issues. The current focus of this solution is on FPC Errors as defined by the MX Escalation team.
 
+![image](https://github.com/user-attachments/assets/d24024e4-e8fa-4cfd-986f-707642103726)
+
 ## Prerequisites
 
 - Docker and docker-compose needs to be installed on your machine
