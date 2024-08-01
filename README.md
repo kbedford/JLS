@@ -6,7 +6,7 @@ The Junos Log Scanner is a comprehensive containerized solution designed to moni
 
 ## Prerequisites
 
-- Docker installed on your machine
+- Docker and docker-compose needs to be installed on your machine
 
 ## Project Structure
 
@@ -22,7 +22,7 @@ The Junos Log Scanner is a comprehensive containerized solution designed to moni
 
 1. **Clone the repository**:
     ```sh
-    git clone https://github.com/yourusername/junos-fpc-errors.git
+    git clone https://github.com/kbedford/JLS.git
     cd junos-fpc-errors
     ```
 
