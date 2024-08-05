@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: newpassword
+    volumes:
+      - /home/python-logs-scanner/data/postgres:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - python-logs-scanner_log-net
+
+  grafana:
+    image: grafana/grafana
+    user: "472:472"
+    depends_on:
+      - postgres
+    environment:
+      GF_SECURITY_ADMIN_USER: 'admin'
+      GF_SECURITY_ADMIN_PASSWORD: 'admin'
+      GF_PATHS_DATA: '/var/lib/grafana'
+    volumes:
+      - /home/python-logs-scanner/data/grafana:/var/lib/grafana
+    ports:
+      - "3003:3000"
+    networks:
+      - python-logs-scanner_log-net
+
+  juno_fpc_errors:
+    build:
+      context: ./junos-fpc-errors
+    environment:
+      - CSV_FILE_PATH=/var/tmp/test1.csv
+      - LOG_FILE_PATH=/var/log/logstash/syslog.log
+      - DB_HOST=postgres
+    volumes:
+      - /var/tmp:/var/tmp
+      - /var/log:/var/log
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+    ports:
+      - "514:514/udp"
+      - "5514:5514/udp"
+      - "8000:8000"
+    depends_on:
+      - postgres
+      - grafana
+    networks:
+      - python-logs-scanner_log-net
+
+networks:
+  python-logs-scanner_log-net:
+    driver: bridge
+
