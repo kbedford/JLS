@@ -66,5 +66,3 @@ The Junos Log Scanner is a comprehensive containerized solution designed to moni
 
 Please submit any issues or pull requests to the repository.
 =======
-# JLS
->>>>>>> 519628358efe5f447e4fcc3cfb266352e50bb879
