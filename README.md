@@ -40,17 +40,17 @@ The Junos Log Scanner is a comprehensive containerized solution designed to moni
 1. **Clone the repository**:
     ```sh
     git clone https://github.com/kbedford/JLS.git
-    cd junos-fpc-errors
+    cd JLS
     ```
 
-2. **Build the Docker image**:
+2. **Build the Docker Containers**:
     ```sh
-    docker build -t junos-fpc-errors .
+    sudo docker-compose build .
     ```
 
 3. **Run the Docker container**:
     ```sh
-    docker run -d -p 514:514/udp -p 5514:5514/udp -p 8000:8000 junos-fpc-errors
+    sudo docker-compose up
     ```
 
 ## Usage
