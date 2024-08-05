@@ -16,12 +16,7 @@ RUN apt-get update && apt-get install -y \
     gcc \
     python3-dev \
     libpq-dev && \
-    pip install --no-cache-dir -r requirements.txt && \
-    pip install \
-        robotframework \
-        robotframework-requests \
-        robotframework-databaselibrary \
-        psycopg2-binary
+    pip install --no-cache-dir -r requirements.txt
 
 # Install Logstash
 RUN wget https://artifacts.elastic.co/downloads/logstash/logstash-7.12.1-linux-x86_64.tar.gz && \
