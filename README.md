@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Junos Log Scanner 
 
 This repository contains a containerized program for scanning logs for Junos FPC errors.
@@ -66,3 +67,6 @@ The Junos Log Scanner is a comprehensive containerized solution designed to moni
 ## Contributing
 
 Please submit any issues or pull requests to the repository.
+=======
+# JLS
+>>>>>>> 519628358efe5f447e4fcc3cfb266352e50bb879
