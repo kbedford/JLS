@@ -26,7 +26,13 @@ The Junos Log Scanner is a powerful tool for monitoring and analysing syslog mes
 
 ## Prerequisites
 
-- Docker and docker-compose needs to be installed on your machine
+Ensure the following are installed on your machine:
+
+- Docker
+- docker-compose 
+- python3
+
+
 
 ## Project Structure
 
