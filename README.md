@@ -4,21 +4,22 @@ This repository contains a containerized program for scanning logs for Junos FPC
 
 The Junos Log Scanner is a comprehensive containerized solution designed to monitor, analyze, and report syslog messages from Juniper routers. It employs a combination of Python scripts, PostgreSQL databases, Logstash, and Grafana to capture, process, and visualize log data, facilitating the timely identification and resolution of network issues. The current focus of this solution is on FPC Errors as defined by the MX Escalation team.
 
-
+The Junos Log Scanner is a powerful tool for monitoring and analysing syslog messages from Juniper routers. By leveraging Logstash, PostgreSQL, Python, Grafana, and Robot Framework, it provides a robust solution for real-time log analysis, pattern matching, and visualization. Containerization using Docker and Docker Compose ensures easy deployment and management, making the Junos Log Scanner an essential tool for network administrators to maintain network reliability and performance.
 
 # Components
 
 1.	Logstash: Logstash receives syslog messages from Juniper routers and converts them into a structured JSON format. This allows for easy parsing and pattern matching by the Python   script.
 
 2.	PostgreSQL Database: The database serves two primary tables:
-•	Error patterns: Stores predefined error patterns to be matched against incoming syslog messages.
-•	Syslog hits: Stores log entries that match the predefined error patterns, including additional metadata for further analysis.
+   
+        •	Error patterns: Stores predefined error patterns to be matched against incoming syslog messages.
+        •	Syslog hits: Stores log entries that match the predefined error patterns, including additional metadata for further analysis.
 
-3.	Junos Log Scanner ( Python Script - syslog_hits.py): This script continuously scans the log files within logstash, matches log entries against predefined patterns, and inserts matching entries into the syslog_hits table in the PostgreSQL database.
+4.	Junos Log Scanner ( Python Script - syslog_hits.py): This script continuously scans the log files within logstash, matches log entries against predefined patterns, and inserts matching entries into the syslog_hits table in the PostgreSQL database.
 
-4.	Grafana: Grafana is used to visualize the data stored in the PostgreSQL database. It provides an intuitive interface to view recent syslog hits and error patterns, as shown in the attached image.
+5.	Grafana: Grafana is used to visualize the data stored in the PostgreSQL database. It provides an intuitive interface to view recent syslog hits and error patterns, as shown in the attached image.
 
-5.	Robot Framework Tests: These tests ensure the system's proper functioning by verifying database connectivity, table existence, and the presence of matched patterns in the database.
+6.	Robot Framework Tests: These tests ensure the system's proper functioning by verifying database connectivity, table existence, and the presence of matched patterns in the database.
 
 
 
