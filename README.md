@@ -56,11 +56,6 @@ The Junos Log Scanner is a comprehensive containerized solution designed to moni
 
 ## Usage
 
-- The container exposes the following ports:
-  - `514/udp`: For syslog
-  - `5514/udp`: For another syslog input
-  - `8000`: For any web service or API provided by your application
-
 - Once the container is running, the program will start scanning the logs as defined in `syslog_hits.py`.
 
 ## Contributing
