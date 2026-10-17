@@ -73,6 +73,7 @@ with sync_playwright() as p:
                     if result.get('error'): errors.append(result['error'])
     page.on('response',check_response)
     def capture(filename,path,text):
+        page.set_viewport_size({'width':1600,'height':1050 if filename.startswith('01') else 780})
         page.goto(base+path,wait_until='domcontentloaded')
         try:
             page.get_by_text(text,exact=False).first.wait_for(state='visible',timeout=45000)

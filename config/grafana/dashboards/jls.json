@@ -2,7 +2,7 @@
   "uid": "jls-operations",
   "title": "JLS Error Monitoring",
   "schemaVersion": 39,
-  "version": 1,
+  "version": 2,
   "refresh": "30s",
   "timezone": "utc",
   "time": {
@@ -134,13 +134,101 @@
       "targets": [
         {
           "refId": "A",
-          "rawSql": "SELECT event_time,device,source_ip,fpc,pfe,asic,cm_severity,syslog_severity,title,message,kb_references::text,pr_references::text,guidance::text,version_notes::text,timestamp_source FROM jls.hit_details WHERE $__timeFilter(event_time) AND device IN (${device:sqlstring}) ORDER BY event_time DESC LIMIT 500",
+          "rawSql": "SELECT event_time,device,fpc,asic,title,message,cm_severity,source_ip,pfe,syslog_severity,kb_references::text,pr_references::text,guidance::text,version_notes::text,timestamp_source FROM jls.hit_details WHERE $__timeFilter(event_time) AND device IN (${device:sqlstring}) ORDER BY event_time DESC LIMIT 500",
           "format": "table",
           "editorMode": "code"
         }
       ],
       "options": {
         "showHeader": true
+      },
+      "fieldConfig": {
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "event_time"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 180
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "device"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 125
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "fpc"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 55
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "asic"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 105
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "title"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 480
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "message"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 800
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "cm_severity"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 110
+              }
+            ]
+          }
+        ]
       }
     },
     {
@@ -160,13 +248,113 @@
       "targets": [
         {
           "refId": "A",
-          "rawSql": "SELECT first_seen,last_seen,device,fpc,pfe,asic,title,occurrences FROM jls.occurrence_groups WHERE $__timeFilter(first_seen) AND device IN (${device:sqlstring}) ORDER BY occurrences DESC LIMIT 200",
+          "rawSql": "SELECT device,fpc,asic,occurrences,title,first_seen,last_seen,pfe FROM jls.occurrence_groups WHERE $__timeFilter(first_seen) AND device IN (${device:sqlstring}) ORDER BY occurrences DESC LIMIT 200",
           "format": "table",
           "editorMode": "code"
         }
       ],
       "options": {
         "showHeader": true
+      },
+      "fieldConfig": {
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "device"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 130
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "fpc"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 55
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "asic"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 100
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "occurrences"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 105
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "title"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 670
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "first_seen"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 185
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "last_seen"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 185
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "pfe"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 55
+              }
+            ]
+          }
+        ]
       }
     },
     {
@@ -186,13 +374,77 @@
       "targets": [
         {
           "refId": "A",
-          "rawSql": "SELECT event_time,device,fpc,pfe,asic,cm_severity,error_code,stream,message FROM jls.events WHERE $__timeFilter(event_time) AND device IN (${device:sqlstring}) ORDER BY event_time ASC LIMIT 1000",
+          "rawSql": "SELECT event_time,device,message,fpc,asic,cm_severity,pfe,error_code,stream FROM jls.events WHERE $__timeFilter(event_time) AND device IN (${device:sqlstring}) ORDER BY event_time ASC LIMIT 1000",
           "format": "table",
           "editorMode": "code"
         }
       ],
       "options": {
         "showHeader": true
+      },
+      "fieldConfig": {
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "event_time"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 180
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "device"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 130
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "message"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 1000
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "fpc"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 55
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "asic"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 105
+              }
+            ]
+          }
+        ]
       }
     },
     {

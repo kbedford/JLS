@@ -133,3 +133,9 @@ Heading styles and paragraph locations can change between document versions: rev
 ## Worked Junos log demonstration
 
 See [positive and negative test results](docs/DEMONSTRATION.md) for 18 dummy Junos messages, expected matches, observed results, database behavior and replay instructions. Run `python tools/demo.py` for an offline demonstration.
+
+## Grafana demo screenshots
+
+[View the captured Grafana demo and verified results](docs/grafana/README.md): overview, matched errors, recurring faults and unmatched logs, using synthetic Junos events.
+
+![Grafana JLS overview](docs/grafana/01-overview.png)
