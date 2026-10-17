@@ -1,0 +1,291 @@
+{
+  "catalogue_version": "1.3",
+  "catalogue_digest": "d71a6623ab4259c5295814de053d716471047d2fa4e37e18084be51a70ace1dd",
+  "active_rules": 98,
+  "passed": 18,
+  "total": 18,
+  "results": [
+    {
+      "id": "D01",
+      "name": "XM DMEM parity",
+      "passed": true,
+      "expected_rule_ids": [
+        "jls-48edb71c0ff63672"
+      ],
+      "actual_rule_ids": [
+        "jls-48edb71c0ff63672"
+      ],
+      "device": "lab-mx01",
+      "fpc": 2,
+      "pfe": null,
+      "asic": "XMCHIP(1)",
+      "timestamp_source": "device_inferred_year_timezone",
+      "evaluation_errors": []
+    },
+    {
+      "id": "D02",
+      "name": "XM packet CRC",
+      "passed": true,
+      "expected_rule_ids": [
+        "jls-40272ff646193bc0"
+      ],
+      "actual_rule_ids": [
+        "jls-40272ff646193bc0"
+      ],
+      "device": "lab-mx01",
+      "fpc": 2,
+      "pfe": null,
+      "asic": "XMCHIP(1)",
+      "timestamp_source": "device_inferred_year_timezone",
+      "evaluation_errors": []
+    },
+    {
+      "id": "D03",
+      "name": "XM queue underrun corrected spelling",
+      "passed": true,
+      "expected_rule_ids": [
+        "jls-0f807aafcc486a1b"
+      ],
+      "actual_rule_ids": [
+        "jls-0f807aafcc486a1b"
+      ],
+      "device": "lab-mx01",
+      "fpc": 2,
+      "pfe": null,
+      "asic": "XMCHIP(1)",
+      "timestamp_source": "device_inferred_year_timezone",
+      "evaluation_errors": []
+    },
+    {
+      "id": "D04",
+      "name": "XM queue underrun source spelling",
+      "passed": true,
+      "expected_rule_ids": [
+        "jls-0f807aafcc486a1b"
+      ],
+      "actual_rule_ids": [
+        "jls-0f807aafcc486a1b"
+      ],
+      "device": "lab-mx01",
+      "fpc": 2,
+      "pfe": null,
+      "asic": "XMCHIP(1)",
+      "timestamp_source": "device_inferred_year_timezone",
+      "evaluation_errors": []
+    },
+    {
+      "id": "D05",
+      "name": "MQ single-bit ECC",
+      "passed": true,
+      "expected_rule_ids": [
+        "jls-256d4bf373ac9c0c"
+      ],
+      "actual_rule_ids": [
+        "jls-256d4bf373ac9c0c"
+      ],
+      "device": "lab-mx01",
+      "fpc": 2,
+      "pfe": null,
+      "asic": "MQCHIP(3)",
+      "timestamp_source": "device_inferred_year_timezone",
+      "evaluation_errors": []
+    },
+    {
+      "id": "D06",
+      "name": "MQ double-bit ECC",
+      "passed": true,
+      "expected_rule_ids": [
+        "jls-6bc147e936977595"
+      ],
+      "actual_rule_ids": [
+        "jls-6bc147e936977595"
+      ],
+      "device": "lab-mx01",
+      "fpc": 2,
+      "pfe": null,
+      "asic": "MQCHIP(3)",
+      "timestamp_source": "device_inferred_year_timezone",
+      "evaluation_errors": []
+    },
+    {
+      "id": "D07",
+      "name": "EA corrected ECC",
+      "passed": true,
+      "expected_rule_ids": [
+        "jls-483b5d6511b3d2ea"
+      ],
+      "actual_rule_ids": [
+        "jls-483b5d6511b3d2ea"
+      ],
+      "device": "lab-mx01",
+      "fpc": 2,
+      "pfe": null,
+      "asic": "EA[0:0]",
+      "timestamp_source": "device_inferred_year_timezone",
+      "evaluation_errors": []
+    },
+    {
+      "id": "D08",
+      "name": "EA primary timeout",
+      "passed": true,
+      "expected_rule_ids": [
+        "jls-9e12ab8365519759"
+      ],
+      "actual_rule_ids": [
+        "jls-9e12ab8365519759"
+      ],
+      "device": "lab-mx01",
+      "fpc": 2,
+      "pfe": null,
+      "asic": "EA[1:0]",
+      "timestamp_source": "device_inferred_year_timezone",
+      "evaluation_errors": []
+    },
+    {
+      "id": "D09",
+      "name": "EA secondary timeout",
+      "passed": true,
+      "expected_rule_ids": [
+        "jls-9e12ab8365519759"
+      ],
+      "actual_rule_ids": [
+        "jls-9e12ab8365519759"
+      ],
+      "device": "lab-mx01",
+      "fpc": 2,
+      "pfe": null,
+      "asic": "EA[1:0]",
+      "timestamp_source": "device_inferred_year_timezone",
+      "evaluation_errors": []
+    },
+    {
+      "id": "D10",
+      "name": "XL KMA parity",
+      "passed": true,
+      "expected_rule_ids": [
+        "jls-d70fda8737709869"
+      ],
+      "actual_rule_ids": [
+        "jls-d70fda8737709869"
+      ],
+      "device": "lab-mx01",
+      "fpc": 2,
+      "pfe": null,
+      "asic": "XL[0:0]",
+      "timestamp_source": "device_inferred_year_timezone",
+      "evaluation_errors": []
+    },
+    {
+      "id": "D11",
+      "name": "MQ DDR checksum",
+      "passed": true,
+      "expected_rule_ids": [
+        "jls-83846d37a71140d8"
+      ],
+      "actual_rule_ids": [
+        "jls-83846d37a71140d8"
+      ],
+      "device": "lab-mx01",
+      "fpc": 2,
+      "pfe": null,
+      "asic": "MQCHIP(0)",
+      "timestamp_source": "device_inferred_year_timezone",
+      "evaluation_errors": []
+    },
+    {
+      "id": "D12",
+      "name": "MQSS child drop",
+      "passed": true,
+      "expected_rule_ids": [
+        "jls-78027541f607557e"
+      ],
+      "actual_rule_ids": [
+        "jls-78027541f607557e"
+      ],
+      "device": "lab-mx01",
+      "fpc": 2,
+      "pfe": null,
+      "asic": "MQSS(1)",
+      "timestamp_source": "device_inferred_year_timezone",
+      "evaluation_errors": []
+    },
+    {
+      "id": "D13",
+      "name": "Healthy chip status",
+      "passed": true,
+      "expected_rule_ids": [],
+      "actual_rule_ids": [],
+      "device": "lab-mx01",
+      "fpc": 2,
+      "pfe": null,
+      "asic": "XMCHIP(1)",
+      "timestamp_source": "device_inferred_year_timezone",
+      "evaluation_errors": []
+    },
+    {
+      "id": "D14",
+      "name": "Different chip family",
+      "passed": true,
+      "expected_rule_ids": [],
+      "actual_rule_ids": [],
+      "device": "lab-mx01",
+      "fpc": 2,
+      "pfe": null,
+      "asic": null,
+      "timestamp_source": "device_inferred_year_timezone",
+      "evaluation_errors": []
+    },
+    {
+      "id": "D15",
+      "name": "ECC status only",
+      "passed": true,
+      "expected_rule_ids": [],
+      "actual_rule_ids": [],
+      "device": "lab-mx01",
+      "fpc": 2,
+      "pfe": null,
+      "asic": "MQCHIP(3)",
+      "timestamp_source": "device_inferred_year_timezone",
+      "evaluation_errors": []
+    },
+    {
+      "id": "D16",
+      "name": "BGP established",
+      "passed": true,
+      "expected_rule_ids": [],
+      "actual_rule_ids": [],
+      "device": "lab-mx01",
+      "fpc": 2,
+      "pfe": null,
+      "asic": null,
+      "timestamp_source": "device_inferred_year_timezone",
+      "evaluation_errors": []
+    },
+    {
+      "id": "D17",
+      "name": "Interface up",
+      "passed": true,
+      "expected_rule_ids": [],
+      "actual_rule_ids": [],
+      "device": "lab-mx01",
+      "fpc": 2,
+      "pfe": null,
+      "asic": null,
+      "timestamp_source": "device_inferred_year_timezone",
+      "evaluation_errors": []
+    },
+    {
+      "id": "D18",
+      "name": "Unknown hardware error",
+      "passed": true,
+      "expected_rule_ids": [],
+      "actual_rule_ids": [],
+      "device": "lab-mx01",
+      "fpc": 2,
+      "pfe": null,
+      "asic": null,
+      "timestamp_source": "device_inferred_year_timezone",
+      "evaluation_errors": []
+    }
+  ]
+}

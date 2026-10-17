@@ -23,21 +23,20 @@ jobs:
         env:
           JLS_CATALOGUE_TEST_PATH: catalogue/catalogue.json
           JLS_TEST_DSN: postgresql://postgres:test-only-password@localhost:5432/jls_test
+      - name: Run documented Junos examples
+        run: python tools/demo.py --output demo-results.json
       - name: Validate pipeline configuration
         run: docker run --rm -e INGEST_TOKEN=synthetic-test-token-at-least-32-characters -v "$PWD/config/logstash/pipeline.conf:/usr/share/logstash/pipeline/logstash.conf:ro" docker.elastic.co/logstash/logstash:8.19.13 --config.test_and_exit
-      - name: Start isolated stack with synthetic catalogue
+      - name: Start isolated stack with bundled catalogue
         run: |
           python tools/setup.py
-          echo "CATALOGUE_DIR=./private-catalogue" >> .env
-          mkdir private-catalogue
-          cp examples/catalogue.json private-catalogue/catalogue.json
           docker compose up --build -d --wait --wait-timeout 240
       - name: Check TCP ingestion
         run: |
-          python -c "import socket; s=socket.create_connection(('127.0.0.1',5514)); s.sendall(b'Oct 16 12:00:00 test-router fpc1 TESTCHIP(1): parity error\n'); s.close()"
+          python -c "import socket,pathlib; s=socket.create_connection(('127.0.0.1',5514)); s.sendall(pathlib.Path('examples/junos-demo.log').read_bytes()); s.close()"
           for attempt in $(seq 1 30); do
-            count=$(docker compose exec -T postgres psql -U postgres -d jls -Atc 'SELECT count(*) FROM jls.syslog_hits')
-            if [ "$count" -ge 1 ]; then exit 0; fi
+            count=$(docker compose exec -T postgres psql -U postgres -d jls -Atc "SELECT (SELECT count(*) FROM jls.events)::text || ',' || (SELECT count(*) FROM jls.syslog_hits)::text || ',' || (SELECT count(*) FROM jls.events e WHERE NOT EXISTS (SELECT 1 FROM jls.syslog_hits h WHERE h.event_id=e.event_id))::text")
+            if [ "$count" = "18,12,6" ]; then echo "PASS: 18 events, 12 matched, 6 unmatched via TCP"; exit 0; fi
             sleep 2
           done
           exit 1

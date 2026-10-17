@@ -1,0 +1,242 @@
+[
+  {
+    "id": "D01",
+    "name": "XM DMEM parity",
+    "event": {
+      "@timestamp": "2026-10-17T10:00:00Z",
+      "source_ip": "192.0.2.10",
+      "message": "Oct 17 10:00:00 lab-mx01 fpc2 XMCHIP(1): MALLOC: DMEM allocation memory parity error"
+    },
+    "expected_rule_ids": [
+      "jls-48edb71c0ff63672"
+    ],
+    "expected_device": "lab-mx01",
+    "expected_fpc": 2
+  },
+  {
+    "id": "D02",
+    "name": "XM packet CRC",
+    "event": {
+      "@timestamp": "2026-10-17T10:00:01Z",
+      "source_ip": "192.0.2.10",
+      "message": "Oct 17 10:00:01 lab-mx01 fpc2 XMCHIP(1): FI: Packet CRC error - Stream 28 Count 1"
+    },
+    "expected_rule_ids": [
+      "jls-40272ff646193bc0"
+    ],
+    "expected_device": "lab-mx01",
+    "expected_fpc": 2
+  },
+  {
+    "id": "D03",
+    "name": "XM queue underrun corrected spelling",
+    "event": {
+      "@timestamp": "2026-10-17T10:00:02Z",
+      "source_ip": "192.0.2.10",
+      "message": "Oct 17 10:00:02 lab-mx01 fpc2 XMCHIP(1): CPQ1: Queue underrun indication - Queue 14"
+    },
+    "expected_rule_ids": [
+      "jls-0f807aafcc486a1b"
+    ],
+    "expected_device": "lab-mx01",
+    "expected_fpc": 2
+  },
+  {
+    "id": "D04",
+    "name": "XM queue underrun source spelling",
+    "event": {
+      "@timestamp": "2026-10-17T10:00:03Z",
+      "source_ip": "192.0.2.10",
+      "message": "Oct 17 10:00:03 lab-mx01 fpc2 XMCHIP(1): CPQ1: Queue unrderrun indication - Queue 14"
+    },
+    "expected_rule_ids": [
+      "jls-0f807aafcc486a1b"
+    ],
+    "expected_device": "lab-mx01",
+    "expected_fpc": 2
+  },
+  {
+    "id": "D05",
+    "name": "MQ single-bit ECC",
+    "event": {
+      "@timestamp": "2026-10-17T10:00:04Z",
+      "source_ip": "192.0.2.10",
+      "message": "Oct 17 10:00:04 lab-mx01 fpc2 MQCHIP(3) CPQ RLDRAM single bit ECC error, bank 1 addr 0x4c891"
+    },
+    "expected_rule_ids": [
+      "jls-256d4bf373ac9c0c"
+    ],
+    "expected_device": "lab-mx01",
+    "expected_fpc": 2
+  },
+  {
+    "id": "D06",
+    "name": "MQ double-bit ECC",
+    "event": {
+      "@timestamp": "2026-10-17T10:00:05Z",
+      "source_ip": "192.0.2.10",
+      "message": "Oct 17 10:00:05 lab-mx01 fpc2 MQCHIP(3) CPQ RLDRAM double bit ECC error, bank 4 addr 0x82f45"
+    },
+    "expected_rule_ids": [
+      "jls-6bc147e936977595"
+    ],
+    "expected_device": "lab-mx01",
+    "expected_fpc": 2
+  },
+  {
+    "id": "D07",
+    "name": "EA corrected ECC",
+    "event": {
+      "@timestamp": "2026-10-17T10:00:06Z",
+      "source_ip": "192.0.2.10",
+      "message": "Oct 17 10:00:06 lab-mx01 fpc2 EA[0:0].idmem_slice[0].protect ERR 30 Corrected single bit ECC error @ 0xfbf80005."
+    },
+    "expected_rule_ids": [
+      "jls-483b5d6511b3d2ea"
+    ],
+    "expected_device": "lab-mx01",
+    "expected_fpc": 2
+  },
+  {
+    "id": "D08",
+    "name": "EA primary timeout",
+    "event": {
+      "@timestamp": "2026-10-17T10:00:07Z",
+      "source_ip": "192.0.2.10",
+      "message": "Oct 17 10:00:07 lab-mx01 fpc2 EA[1:0].disp[2] PRIMARY_TIMEOUT (PPE0 Zone 27)."
+    },
+    "expected_rule_ids": [
+      "jls-9e12ab8365519759"
+    ],
+    "expected_device": "lab-mx01",
+    "expected_fpc": 2
+  },
+  {
+    "id": "D09",
+    "name": "EA secondary timeout",
+    "event": {
+      "@timestamp": "2026-10-17T10:00:08Z",
+      "source_ip": "192.0.2.10",
+      "message": "Oct 17 10:00:08 lab-mx01 fpc2 EA[1:0].disp[2] SECONDARY_TIMEOUT (PPE0 Zone 27)."
+    },
+    "expected_rule_ids": [
+      "jls-9e12ab8365519759"
+    ],
+    "expected_device": "lab-mx01",
+    "expected_fpc": 2
+  },
+  {
+    "id": "D10",
+    "name": "XL KMA parity",
+    "event": {
+      "@timestamp": "2026-10-17T10:00:09Z",
+      "source_ip": "192.0.2.10",
+      "message": "Oct 17 10:00:09 lab-mx01 fpc2 XL[0:0]_PPE 2 Errors KMA[0] parity error"
+    },
+    "expected_rule_ids": [
+      "jls-d70fda8737709869"
+    ],
+    "expected_device": "lab-mx01",
+    "expected_fpc": 2
+  },
+  {
+    "id": "D11",
+    "name": "MQ DDR checksum",
+    "event": {
+      "@timestamp": "2026-10-17T10:00:10Z",
+      "source_ip": "192.0.2.10",
+      "message": "Oct 17 10:00:10 lab-mx01 fpc2 MQCHIP(0) DDRIF WO Checksum Error"
+    },
+    "expected_rule_ids": [
+      "jls-83846d37a71140d8"
+    ],
+    "expected_device": "lab-mx01",
+    "expected_fpc": 2
+  },
+  {
+    "id": "D12",
+    "name": "MQSS child drop",
+    "event": {
+      "@timestamp": "2026-10-17T10:00:11Z",
+      "source_ip": "192.0.2.10",
+      "message": "Oct 17 10:00:11 lab-mx01 fpc2 MQSS(1): FI: Child drop error - Stream 60, Count 290"
+    },
+    "expected_rule_ids": [
+      "jls-78027541f607557e"
+    ],
+    "expected_device": "lab-mx01",
+    "expected_fpc": 2
+  },
+  {
+    "id": "D13",
+    "name": "Healthy chip status",
+    "event": {
+      "@timestamp": "2026-10-17T10:00:12Z",
+      "source_ip": "192.0.2.10",
+      "message": "Oct 17 10:00:12 lab-mx01 fpc2 XMCHIP(1): MALLOC: DMEM allocation memory status OK"
+    },
+    "expected_rule_ids": [],
+    "expected_device": "lab-mx01",
+    "expected_fpc": 2
+  },
+  {
+    "id": "D14",
+    "name": "Different chip family",
+    "event": {
+      "@timestamp": "2026-10-17T10:00:13Z",
+      "source_ip": "192.0.2.10",
+      "message": "Oct 17 10:00:13 lab-mx01 fpc2 OTHERCHIP(1): MALLOC: DMEM allocation memory parity error"
+    },
+    "expected_rule_ids": [],
+    "expected_device": "lab-mx01",
+    "expected_fpc": 2
+  },
+  {
+    "id": "D15",
+    "name": "ECC status only",
+    "event": {
+      "@timestamp": "2026-10-17T10:00:14Z",
+      "source_ip": "192.0.2.10",
+      "message": "Oct 17 10:00:14 lab-mx01 fpc2 MQCHIP(3) CPQ RLDRAM ECC counters cleared, bank 1"
+    },
+    "expected_rule_ids": [],
+    "expected_device": "lab-mx01",
+    "expected_fpc": 2
+  },
+  {
+    "id": "D16",
+    "name": "BGP established",
+    "event": {
+      "@timestamp": "2026-10-17T10:00:15Z",
+      "source_ip": "192.0.2.10",
+      "message": "Oct 17 10:00:15 lab-mx01 fpc2 rpd[100]: RPD_BGP_NEIGHBOR_STATE_CHANGED: BGP peer 192.0.2.20 changed state to Established"
+    },
+    "expected_rule_ids": [],
+    "expected_device": "lab-mx01",
+    "expected_fpc": 2
+  },
+  {
+    "id": "D17",
+    "name": "Interface up",
+    "event": {
+      "@timestamp": "2026-10-17T10:00:16Z",
+      "source_ip": "192.0.2.10",
+      "message": "Oct 17 10:00:16 lab-mx01 fpc2 mib2d[101]: SNMP_TRAP_LINK_UP: ifName xe-0/0/0"
+    },
+    "expected_rule_ids": [],
+    "expected_device": "lab-mx01",
+    "expected_fpc": 2
+  },
+  {
+    "id": "D18",
+    "name": "Unknown hardware error",
+    "event": {
+      "@timestamp": "2026-10-17T10:00:17Z",
+      "source_ip": "192.0.2.10",
+      "message": "Oct 17 10:00:17 lab-mx01 fpc2 UNKNOWNCHIP(1): unsupported diagnostic fault 12345"
+    },
+    "expected_rule_ids": [],
+    "expected_device": "lab-mx01",
+    "expected_fpc": 2
+  }
+]

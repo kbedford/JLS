@@ -106,7 +106,7 @@ JLS_TEST_DSN=postgresql://postgres:password@localhost/jls_test pytest -q
 JLS_CATALOGUE_TEST_PATH=catalogue/catalogue.json pytest -q
 ```
 
-Tests cover matching, timestamp parsing, regex validation/timeouts, authentication, quarantine, event replay, database transactions, catalogue updates, retention and deployment contracts. CI additionally validates Logstash configuration and starts the Docker stack with synthetic data to test TCP-to-database ingestion. CI also validates every bundled rule against its regression examples.
+Tests cover matching, timestamp parsing, regex validation/timeouts, authentication, quarantine, event replay, database transactions, catalogue updates, retention and deployment contracts. CI additionally validates Logstash configuration and starts the Docker stack with the bundled catalogue and 18 dummy Junos messages to test TCP-to-database ingestion. CI also validates every bundled rule against its regression examples.
 
 To regenerate a private catalogue after revising its Word source:
 
@@ -117,3 +117,7 @@ PYTHONPATH=junos-fpc-errors python -m jls validate private-catalogue/catalogue.j
 ```
 
 Heading styles and paragraph locations can change between document versions: review every extraction audit and update overrides. Extraction includes text and hyperlinks, not diagrams or screenshots. No remediation commands are executed.
+
+## Worked Junos log demonstration
+
+See [positive and negative test results](docs/DEMONSTRATION.md) for 18 dummy Junos messages, expected matches, observed results, database behavior and replay instructions. Run `python tools/demo.py` for an offline demonstration.
