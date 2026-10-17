@@ -1,23 +1,23 @@
-2026-10-17T22:19:33+00:00 lab-mx01 fpc2 XMCHIP(1): MALLOC: DMEM allocation memory parity error
-2026-10-17T22:19:43+00:00 lab-mx01 fpc2 XMCHIP(1): FI: Packet CRC error - Stream 28 Count 1, severity: major
-2026-10-17T22:19:53+00:00 lab-mx01 fpc2 XMCHIP(1): CPQ1: Queue underrun indication - Queue 14
-2026-10-17T22:20:03+00:00 lab-mx01 fpc2 XMCHIP(1): CPQ1: Queue unrderrun indication - Queue 14
-2026-10-17T22:20:13+00:00 lab-mx01 fpc2 MQCHIP(3) CPQ RLDRAM single bit ECC error, bank 1 addr 0x4c891
-2026-10-17T22:20:23+00:00 lab-mx01 fpc2 MQCHIP(3) CPQ RLDRAM double bit ECC error, bank 4 addr 0x82f45, severity: major
-2026-10-17T22:20:33+00:00 lab-mx01 fpc2 EA[0:0].idmem_slice[0].protect ERR 30 Corrected single bit ECC error @ 0xfbf80005.
-2026-10-17T22:20:43+00:00 lab-mx01 fpc2 EA[1:0].disp[2] PRIMARY_TIMEOUT (PPE0 Zone 27).
-2026-10-17T22:20:53+00:00 lab-mx01 fpc2 EA[1:0].disp[2] SECONDARY_TIMEOUT (PPE0 Zone 27).
-2026-10-17T22:21:03+00:00 lab-mx01 fpc2 XL[0:0]_PPE 2 Errors KMA[0] parity error
-2026-10-17T22:21:13+00:00 lab-mx01 fpc2 MQCHIP(0) DDRIF WO Checksum Error
-2026-10-17T22:21:23+00:00 lab-mx01 fpc2 MQSS(1): FI: Child drop error - Stream 60, Count 290
-2026-10-17T22:21:33+00:00 lab-clean01 fpc2 XMCHIP(1): MALLOC: DMEM allocation memory status OK
-2026-10-17T22:21:43+00:00 lab-clean01 fpc2 OTHERCHIP(1): MALLOC: DMEM allocation memory parity error
-2026-10-17T22:21:53+00:00 lab-clean01 fpc2 MQCHIP(3) CPQ RLDRAM ECC counters cleared, bank 1
-2026-10-17T22:22:03+00:00 lab-clean01 fpc2 rpd[100]: RPD_BGP_NEIGHBOR_STATE_CHANGED: BGP peer 192.0.2.20 changed state to Established
-2026-10-17T22:22:13+00:00 lab-clean01 fpc2 mib2d[101]: SNMP_TRAP_LINK_UP: ifName xe-0/0/0
-2026-10-17T22:22:23+00:00 lab-clean01 fpc2 UNKNOWNCHIP(1): unsupported diagnostic fault 12345
-2026-10-17T22:23:33+00:00 lab-mx01 fpc2 XMCHIP(1): MALLOC: DMEM allocation memory parity error
-2026-10-17T22:23:53+00:00 lab-mx01 fpc2 XMCHIP(1): MALLOC: DMEM allocation memory parity error
-2026-10-17T22:24:13+00:00 lab-mx01 fpc2 XMCHIP(1): MALLOC: DMEM allocation memory parity error
-2026-10-17T22:24:33+00:00 lab-mx01 fpc2 XMCHIP(1): MALLOC: DMEM allocation memory parity error
-2026-10-17T22:24:53+00:00 lab-mx01 fpc2 XMCHIP(1): MALLOC: DMEM allocation memory parity error
+2026-10-17T22:23:04+00:00 lab-mx01 fpc2 XMCHIP(1): MALLOC: DMEM allocation memory parity error
+2026-10-17T22:23:14+00:00 lab-mx01 fpc2 XMCHIP(1): FI: Packet CRC error - Stream 28 Count 1, severity: major
+2026-10-17T22:23:24+00:00 lab-mx01 fpc2 XMCHIP(1): CPQ1: Queue underrun indication - Queue 14
+2026-10-17T22:23:34+00:00 lab-mx01 fpc2 XMCHIP(1): CPQ1: Queue unrderrun indication - Queue 14
+2026-10-17T22:23:44+00:00 lab-mx01 fpc2 MQCHIP(3) CPQ RLDRAM single bit ECC error, bank 1 addr 0x4c891
+2026-10-17T22:23:54+00:00 lab-mx01 fpc2 MQCHIP(3) CPQ RLDRAM double bit ECC error, bank 4 addr 0x82f45, severity: major
+2026-10-17T22:24:04+00:00 lab-mx01 fpc2 EA[0:0].idmem_slice[0].protect ERR 30 Corrected single bit ECC error @ 0xfbf80005.
+2026-10-17T22:24:14+00:00 lab-mx01 fpc2 EA[1:0].disp[2] PRIMARY_TIMEOUT (PPE0 Zone 27).
+2026-10-17T22:24:24+00:00 lab-mx01 fpc2 EA[1:0].disp[2] SECONDARY_TIMEOUT (PPE0 Zone 27).
+2026-10-17T22:24:34+00:00 lab-mx01 fpc2 XL[0:0]_PPE 2 Errors KMA[0] parity error
+2026-10-17T22:24:44+00:00 lab-mx01 fpc2 MQCHIP(0) DDRIF WO Checksum Error
+2026-10-17T22:24:54+00:00 lab-mx01 fpc2 MQSS(1): FI: Child drop error - Stream 60, Count 290
+2026-10-17T22:25:04+00:00 lab-clean01 fpc2 XMCHIP(1): MALLOC: DMEM allocation memory status OK
+2026-10-17T22:25:14+00:00 lab-clean01 fpc2 OTHERCHIP(1): MALLOC: DMEM allocation memory parity error
+2026-10-17T22:25:24+00:00 lab-clean01 fpc2 MQCHIP(3) CPQ RLDRAM ECC counters cleared, bank 1
+2026-10-17T22:25:34+00:00 lab-clean01 fpc2 rpd[100]: RPD_BGP_NEIGHBOR_STATE_CHANGED: BGP peer 192.0.2.20 changed state to Established
+2026-10-17T22:25:44+00:00 lab-clean01 fpc2 mib2d[101]: SNMP_TRAP_LINK_UP: ifName xe-0/0/0
+2026-10-17T22:25:54+00:00 lab-clean01 fpc2 UNKNOWNCHIP(1): unsupported diagnostic fault 12345
+2026-10-17T22:27:04+00:00 lab-mx01 fpc2 XMCHIP(1): MALLOC: DMEM allocation memory parity error
+2026-10-17T22:27:24+00:00 lab-mx01 fpc2 XMCHIP(1): MALLOC: DMEM allocation memory parity error
+2026-10-17T22:27:44+00:00 lab-mx01 fpc2 XMCHIP(1): MALLOC: DMEM allocation memory parity error
+2026-10-17T22:28:04+00:00 lab-mx01 fpc2 XMCHIP(1): MALLOC: DMEM allocation memory parity error
+2026-10-17T22:28:24+00:00 lab-mx01 fpc2 XMCHIP(1): MALLOC: DMEM allocation memory parity error

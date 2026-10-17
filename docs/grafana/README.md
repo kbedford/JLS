@@ -2,7 +2,7 @@
 
 These are actual browser screenshots of Grafana running with JLS, PostgreSQL and Logstash in an isolated Docker Compose stack. All device names, log events and alarms are synthetic. No screenshots are mockups.
 
-Captured: 2026-10-17T22:27:49.802304+00:00. [Workflow run](https://github.com/kbedford/JLS/actions/runs/39075015171). Source commit: `728cecd60afe1b3c2b3dbae8374eb4eebd3a610c`.
+Captured: 2026-10-17T22:31:19.387472+00:00. [Workflow run](https://github.com/kbedford/JLS/actions/runs/39075291936). Source commit: `a93b239f05fb8fe9d200fc424cc53dac1ff69dc8`.
 
 ## Verified results
 
