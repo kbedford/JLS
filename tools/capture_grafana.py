@@ -55,7 +55,7 @@ errors=[]
 queries=[]
 with sync_playwright() as p:
     browser=p.chromium.launch()
-    context=browser.new_context(viewport={'width':1600,'height':1050},device_scale_factor=1)
+    context=browser.new_context(viewport={'width':1600,'height':1050},device_scale_factor=1,locale='en-GB',timezone_id='UTC')
     response=context.request.post(base+'/login',data={'user':'admin','password':values['GRAFANA_ADMIN_PASSWORD']})
     assert response.ok, f'Grafana login failed: {response.status}'
     page=context.new_page()
@@ -85,7 +85,7 @@ with sync_playwright() as p:
         page.wait_for_timeout(2000)  # Allow charts/fonts to finish painting after data appears.
         assert not errors, errors
         page.screenshot(path=str(OUT/filename),animations='disabled')
-    capture('01-overview.png',f'/d/jls-operations/jls-error-monitoring?{common}&var-device=lab-mx01','lab-mx01')
+    capture('01-overview.png',f'/d/jls-operations/jls-error-monitoring?{common}&var-device=lab-mx01','DMEM allocation memory parity error')
     capture('02-matched-errors.png',f'/d-solo/jls-operations/jls-error-monitoring?{common}&panelId=5&var-device=lab-mx01','DMEM allocation memory parity error')
     capture('03-repeated-errors.png',f'/d-solo/jls-operations/jls-error-monitoring?{common}&panelId=6&var-device=lab-mx01','DMEM allocation memory parity error')
     capture('04-unmatched-logs.png',f'/d-solo/jls-operations/jls-error-monitoring?{common}&panelId=7&var-device=lab-clean01','UNKNOWNCHIP')
