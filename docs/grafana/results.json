@@ -1,0 +1,15 @@
+{
+  "captured_at": "2026-10-17T22:27:49.802304+00:00",
+  "source_commit": "728cecd60afe1b3c2b3dbae8374eb4eebd3a610c",
+  "run_id": "39075015171",
+  "counts": {
+    "events": 23,
+    "hits": 17,
+    "unmatched": 6,
+    "major_alarms": 2,
+    "active_rules": 98
+  },
+  "grafana_query_errors": [],
+  "observed_query_responses": 14,
+  "synthetic_data": true
+}
