@@ -4,6 +4,16 @@ JLS receives Junos syslog, matches a versioned error catalogue, and stores event
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    R["Junos devices"] -->|"UDP / TCP syslog"| L["Logstash persistent queue"]
+    L -->|"Authenticated HTTP delivery"| S["Python parser and rule matcher"]
+    C["98-rule JSON catalogue"] -->|"Validated import"| P[("PostgreSQL")]
+    P -->|"Load matching rules"| S
+    S -->|"Store events and matches atomically"| P
+    P -->|"Read-only queries"| G["Grafana dashboards"]
+```
+
 Routers send UDP or newline-delimited TCP syslog to Logstash. Logstash persists incoming events in a bounded disk queue and retries delivery to an authenticated internal Python endpoint. The endpoint records the event and all matching rule snapshots in one PostgreSQL transaction before acknowledging delivery. Grafana connects using a read-only database role.
 
 There is no periodic whole-file scan, three-hour cutoff, Supervisor, duplicate scanner process, or test-results HTTP server. PostgreSQL and the ingestion API have no published host ports. Grafana binds to localhost by default.
@@ -92,7 +102,7 @@ The old application used `public.error_patterns`, `public.syslog_hits`, host bin
 
 The committed Grafana SQLite database is removed from the new tree, not rewritten out of Git history. If old committed credentials or deployed default passwords were used, rotate them. Dashboards and the datasource are provisioned from reviewed configuration instead.
 
-Images and direct Python dependencies are pinned to explicit versions. Validate patch upgrades and scan images/dependencies in your release process; pinning does not mean vulnerability-free. The old diagram describes the file-scanning design and is retained only as historical context.
+Images and direct Python dependencies are pinned to explicit versions. Validate patch upgrades and scan images/dependencies in your release process; pinning does not mean vulnerability-free.
 
 ## Development and tests
 
