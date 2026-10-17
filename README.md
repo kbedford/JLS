@@ -1,73 +1,119 @@
-# Log Scanner 
+# Junos Log Scanner
 
-This repository contains a containerized program for scanning logs for Junos FPC errors.
+JLS receives Junos syslog, matches a versioned error catalogue, and stores events and troubleshooting guidance in PostgreSQL for Grafana. Matches are advisory: JLS never executes router commands or automatically decides to restart, disable, or replace hardware.
 
-The Junos Log Scanner is a comprehensive containerized solution designed to monitor, analyze, and report syslog messages from Juniper routers. It employs a combination of Python scripts, PostgreSQL databases, Logstash, and Grafana to capture, process, and visualize log data, facilitating the timely identification and resolution of network issues. The current focus of this solution is on FPC Errors as defined by the MX Escalation team.
-![Diagram Description](https://github.com/kbedford/JLS/blob/main/Block%20Diagram.JPG?raw=true)
+## Architecture
 
-The Junos Log Scanner is a powerful tool for monitoring and analysing syslog messages from Juniper routers. By leveraging Logstash, PostgreSQL, Python, Grafana, and Robot Framework, it provides a robust solution for real-time log analysis, pattern matching, and visualization. Containerization using Docker and Docker Compose ensures easy deployment and management, making the Junos Log Scanner an essential tool for network administrators to maintain network reliability and performance.
+Routers send UDP or newline-delimited TCP syslog to Logstash. Logstash persists incoming events in a bounded disk queue and retries delivery to an authenticated internal Python endpoint. The endpoint records the event and all matching rule snapshots in one PostgreSQL transaction before acknowledging delivery. Grafana connects using a read-only database role.
 
-# Components
+There is no periodic whole-file scan, three-hour cutoff, Supervisor, duplicate scanner process, or test-results HTTP server. PostgreSQL and the ingestion API have no published host ports. Grafana binds to localhost by default.
 
-1.	Logstash: Logstash receives syslog messages from Juniper routers and converts them into a structured JSON format. This allows for easy parsing and pattern matching by the Python   script.
+## Install
 
-2.	PostgreSQL Database: The database serves two primary tables:
-   
-        •	Error patterns: Stores predefined error patterns to be matched against incoming syslog messages.
-        •	Syslog hits: Stores log entries that match the predefined error patterns, including additional metadata for further analysis.
+Requires Docker Engine with Compose v2 and Python 3 for credential generation. The scanner image runs on Python 3.12; Logstash is a separate official image rather than a bundled x86-only download.
 
-4.	Junos Log Scanner ( Python Script - syslog_hits.py): This script continuously scans the log files within logstash, matches log entries against predefined patterns, and inserts matching entries into the syslog_hits table in the PostgreSQL database.
+```sh
+git clone https://github.com/kbedford/JLS.git
+cd JLS
+python3 tools/setup.py
+```
 
-5.	Grafana: Grafana is used to visualize the data stored in the PostgreSQL database. It provides an intuitive interface to view recent syslog hits and error patterns, as shown in the attached image.
+Place the separately supplied private `catalogue.json` in `private-catalogue/catalogue.json`. Keep the directory readable by container UID 10001 and restrict access to the host itself. The catalogue contains confidential technical guidance and must not be committed or put in the image. `.gitignore` excludes it and Word documents.
 
-6.	Robot Framework Tests: These tests ensure the system's proper functioning by verifying database connectivity, table existence, and the presence of matched patterns in the database.
+Edit `.env` to set `SYSLOG_BIND` to the collector's management IP and `SYSLOG_TIMEZONE` to the timezone used by devices without explicit timestamp offsets. Restrict incoming ports to the intended device network. The default bind is localhost for initial testing. Credentials are independently generated; inspect `.env` locally for the Grafana admin password.
 
+```sh
+docker compose config --quiet
+docker compose up --build -d --wait
+docker compose ps
+```
 
+Visit http://localhost:3003 and open **JLS / JLS Error Monitoring**. On a remote host, use an SSH tunnel or your authenticated HTTPS proxy. There are no default passwords. Do not expose Grafana directly without HTTPS and your required authentication controls.
 
-## Prerequisites
+On first start the application validates the entire catalogue, creates the `jls` schema tables, and imports the rules transactionally. An absent, invalid, or empty active catalogue fails readiness rather than silently monitoring nothing. On later starts an unchanged catalogue is a no-op; a changed catalogue replaces only its own rules. Events retain their original rule snapshots.
 
-Ensure the following are installed on your machine:
+For a public synthetic-only demonstration, copy `examples/catalogue.json` into `private-catalogue/catalogue.json` and set `CATALOGUE_ID=synthetic-example` in `.env`. This demo contains no Juniper fault catalogue.
 
-- Docker
-- docker-compose 
-- python3
+## Ports and delivery
 
+| Host port | Protocol | Purpose |
+|---|---|---|
+| 514 | UDP | Mapped to the actual Logstash 5514 listener |
+| 5514 | UDP / TCP | Direct syslog; TCP uses newline-delimited messages |
+| 6514 | TCP with mutual TLS | Optional TLS overlay |
+| 3003 on localhost | HTTP | Grafana |
 
+UDP can lose messages before they reach the queue. TCP provides backpressure but not an application-level durable acknowledgement to a router. The 1 GiB Logstash queue protects accepted events across process restarts and database outages, subject to available disk and storage durability. UDP can drop when the queue fills. Monitor queue utilisation, disk, container health, ingestion freshness, and quarantine counts. Size and performance must be validated against the intended traffic rate.
 
-## Project Structure
+Retries of the **same collector envelope** are idempotent using its receipt timestamp, source IP, and message. A later recurrence with a different receipt timestamp is a separate event. Two byte-identical messages from the same source with identical receipt timestamps collapse; upstream retransmissions that acquire a new receipt timestamp remain separate. This is not a universal exactly-once transport guarantee.
 
-- `Dockerfile`: The Docker configuration file for building the container image.
-- `entrypoint.sh`: The entrypoint script that initializes the necessary services inside the container.
-- `logstash.conf`: Configuration file for Logstash.
-- `requirements.txt`: Python dependencies for the project.
-- `supervisord.conf`: Configuration file for Supervisord to manage processes.
-- `syslog_hits.py`: The main Python script for scanning logs.
-- `robot-tests/databse_tests.robot`: Robot Framework test file.
+The collector retains its original `@timestamp`. Device timestamps are parsed separately. Missing years are inferred relative to receipt time and missing timezones use `SYSLOG_TIMEZONE`; the interpretation is recorded. Unknown formats retain the full message and use receipt time. Historical events are accepted regardless of age. For replay, preserve the original receipt timestamp and source to preserve identity. Syslog priority and CM alarm severity are separate fields. ASIC instance numbers are not assumed to be PFE IDs.
 
-## How to Build and Run
+Messages are limited to 64 KiB in the matcher. Malformed envelopes are stored in `jls.rejected_events`; individual regex timeouts retain the event with `evaluation_errors` for investigation and replay. Logstash retries database or validation failures instead of acknowledging them. A configuration/authentication error can intentionally block delivery until corrected.
 
-1. **Clone the repository**:
-    ```sh
-    git clone https://github.com/kbedford/JLS.git
-    cd JLS
-    ```
+## Catalogue maintenance
 
-2. **Build the Docker Containers**:
-    ```sh
-    sudo docker-compose build .
-    ```
+The private package includes the extracted catalogue, review overrides, audit and PostgreSQL seed SQL. The canonical application import is JSON, with validation before writes. Full technical text, conditional actions, cited KB/PR identifiers, version/platform notes, source paragraph locations, original document checksum, and regression examples are retained. KB/PR references are citations, not a claim that each entry has an independently verified primary KB.
 
-3. **Run the Docker container**:
-    ```sh
-    sudo docker-compose up
-    ```
+```sh
+# Validate a replacement without changing PostgreSQL:
+docker compose exec scanner python -m jls validate /catalogue/catalogue.json
+# Atomically import it; the running matcher refreshes database rules within 30 seconds:
+docker compose exec scanner python -m jls import /catalogue/catalogue.json
+```
 
-## Usage
+Mount the directory, so atomically replacing its catalogue file is visible to containers. Restart the service if changing the catalogue ID. Direct SQL changes to patterns are validated on refresh; invalid changes stop readiness and trigger retries. Update the private JSON as well, since subsequent changed-file imports are authoritative.
 
-- Once the container is running, the program will start scanning the logs as defined in `syslog_hits.py`.
+Occurrence groups show repeated signatures per device/FPC/PFE/ASIC in 15-minute windows. The timeline helps inspect preceding and concurrent events. These are triage aids, not automatic root-cause or service-impact determinations. Source guidance containing version-specific, conditional, or contradictory statements must be evaluated by the operator. Platform/version notes are context; the matcher does not enforce applicability without reliable inventory.
 
-## Contributing
+## TLS
 
-Please submit any issues or pull requests to the repository.
+Provision `secrets/tls/server.crt`, `server.pkcs8.key`, and `ca.crt` with appropriate hostnames, trust and container-read permissions. The additional listener requires client certificates:
 
-=======
+```sh
+docker compose -f docker-compose.yml -f compose.tls.yml up --build -d --wait
+```
+
+The overlay **adds** mutual TLS; existing plaintext ports remain enabled. Remove their host port mappings when deploying TLS-only. This listener supports newline framing, not RFC6587 octet-counted framing; use a compatible relay if the sender uses octet counting. Database/API traffic is internal to the Docker host; use transport TLS if moving those components across hosts.
+
+## Retention, recovery and upgrades
+
+`RETENTION_DAYS` defaults to 30. Every minute the service deletes up to 10,000 old events and rejected records, using database storage time so newly arrived historical events are not immediately deleted. Cascading removal includes match snapshots. Keep backups as required; idempotency does not extend beyond deleted event records. Queue capacity is separate from database retention.
+
+```sh
+# Contains private catalogue/log data; keep access restricted.
+docker compose exec -T postgres pg_dump -U postgres -d jls > jls-backup.sql
+# Readiness and operational logs:
+docker compose ps
+docker compose logs --tail=100 scanner logstash
+```
+
+The old application used `public.error_patterns`, `public.syslog_hits`, host bind mounts, and an embedded Grafana database. This version uses a separate `jls` schema and named volumes. **Do not point a new PostgreSQL major version at an existing data directory.** Back up the original deployment with its matching PostgreSQL tools before switching. Keep historical data in the old database or restore a dump into an isolated database for analysis. Legacy records lack reliable collector IDs and parsed fields; automatic historical migration is deliberately not attempted. Do not run `docker compose down -v` on data you need to keep.
+
+The committed Grafana SQLite database is removed from the new tree, not rewritten out of Git history. If old committed credentials or deployed default passwords were used, rotate them. Dashboards and the datasource are provisioned from reviewed configuration instead.
+
+Images and direct Python dependencies are pinned to explicit versions. Validate patch upgrades and scan images/dependencies in your release process; pinning does not mean vulnerability-free. The old diagram describes the file-scanning design and is retained only as historical context.
+
+## Development and tests
+
+```sh
+python3 -m venv .venv
+. .venv/bin/activate
+pip install -r requirements-dev.txt
+pytest -q
+# Use only an isolated, disposable test database: integration fixtures truncate jls tables.
+JLS_TEST_DSN=postgresql://postgres:password@localhost/jls_test pytest -q
+JLS_CATALOGUE_TEST_PATH=private-catalogue/catalogue.json pytest -q
+```
+
+Tests cover matching, timestamp parsing, regex validation/timeouts, authentication, quarantine, event replay, database transactions, catalogue updates, retention and deployment contracts. CI additionally validates Logstash configuration and starts the Docker stack with synthetic data to test TCP-to-database ingestion. Private catalogue data never enters public CI.
+
+To regenerate a private catalogue after revising its Word source:
+
+```sh
+python tools/extract_catalogue.py /private/source.docx \
+  --overrides /private/overrides.json --output private-catalogue/catalogue.json
+PYTHONPATH=junos-fpc-errors python -m jls validate private-catalogue/catalogue.json
+```
+
+Heading styles and paragraph locations can change between document versions: review every extraction audit and update overrides. Extraction includes text and hyperlinks, not diagrams or screenshots. No remediation commands are executed.

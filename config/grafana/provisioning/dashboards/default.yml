@@ -1,0 +1,10 @@
+apiVersion: 1
+providers:
+  - name: JLS
+    orgId: 1
+    folder: JLS
+    type: file
+    disableDeletion: false
+    editable: false
+    options:
+      path: /var/lib/grafana/dashboards
