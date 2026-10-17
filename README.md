@@ -91,7 +91,7 @@ The overlay **adds** mutual TLS; existing plaintext ports remain enabled. Remove
 `RETENTION_DAYS` defaults to 30. Every minute the service deletes up to 10,000 old events and rejected records, using database storage time so newly arrived historical events are not immediately deleted. Cascading removal includes match snapshots. Keep backups as required; idempotency does not extend beyond deleted event records. Queue capacity is separate from database retention.
 
 ```sh
-# Contains private catalogue/log data; keep access restricted.
+# Contains collected logs and catalogue data; keep access restricted.
 docker compose exec -T postgres pg_dump -U postgres -d jls > jls-backup.sql
 # Readiness and operational logs:
 docker compose ps
@@ -105,6 +105,8 @@ The committed Grafana SQLite database is removed from the new tree, not rewritte
 Images and direct Python dependencies are pinned to explicit versions. Validate patch upgrades and scan images/dependencies in your release process; pinning does not mean vulnerability-free.
 
 ## Development and tests
+
+JLS now uses **pytest** for parser, matcher, HTTP and database regression tests, plus **GitHub Actions** for native PostgreSQL and Docker/TCP integration checks. The original Robot Framework suite and test-results web server have been retired; Robot Framework is not required to install or test this project. This is a change in JLS tooling, not a claim that Robot Framework itself is obsolete.
 
 ```sh
 python3 -m venv .venv

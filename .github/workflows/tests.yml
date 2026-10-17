@@ -5,6 +5,7 @@ permissions:
 jobs:
   tests:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     services:
       postgres:
         image: postgres:17.9
@@ -19,7 +20,7 @@ jobs:
         with:
           python-version: '3.12'
       - run: pip install -r requirements-dev.txt
-      - run: pytest -q
+      - run: pytest -q --junitxml=results/pytest.xml
         env:
           JLS_CATALOGUE_TEST_PATH: catalogue/catalogue.json
           JLS_TEST_DSN: postgresql://postgres:test-only-password@localhost:5432/jls_test
@@ -40,6 +41,15 @@ jobs:
             sleep 2
           done
           exit 1
+      - name: Preserve test evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jls-test-results
+          path: |
+            results/pytest.xml
+            demo-results.json
+          if-no-files-found: warn
       - name: Stop test stack
         if: always()
         run: docker compose down -v

@@ -11,4 +11,4 @@ content += "\nCATALOGUE_DIR=./catalogue\nCATALOGUE_ID=health-check-fpc-errors\nS
 fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
 with os.fdopen(fd, "w") as f:
     f.write(content)
-print("Created .env. Install the private catalogue, then set SYSLOG_BIND and SYSLOG_TIMEZONE for your network.")
+print("Created .env using the bundled catalogue. Set SYSLOG_BIND and SYSLOG_TIMEZONE for your network.")
