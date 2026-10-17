@@ -59,6 +59,9 @@ with sync_playwright() as p:
     response=context.request.post(base+'/login',data={'user':'admin','password':values['GRAFANA_ADMIN_PASSWORD']})
     assert response.ok, f'Grafana login failed: {response.status}'
     page=context.new_page()
+    page.on('console', lambda message: print('Browser console:', message.type, message.text, flush=True) if message.type=='error' else None)
+    page.on('requestfailed', lambda request: print('Failed request:', request.url, request.failure, flush=True))
+    page.on('response', lambda response: print('HTTP error:',response.status,response.url,flush=True) if response.status>=400 else None)
     page.on('pageerror', lambda error: print('Browser error:', str(error), flush=True))
     def check_response(response):
         if '/api/ds/query' in response.url:
