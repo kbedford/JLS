@@ -11,7 +11,7 @@ Run date: 17 October 2026. These are synthetic lab messages using documentation-
 - All messages parsed as device `lab-mx01`, FPC 2. PFE remained unknown rather than being inferred from the ASIC number. Classic syslog timestamps explicitly record inferred year/timezone.
 - Catalogue v1.3: 98 active rules. The full catalogue's existing regression examples are also validated when loaded.
 
-The GitHub Actions workflow runs the same suite against native PostgreSQL and sends these 18 log lines over TCP through the complete Docker stack. Its TCP gate requires exactly 18 stored events, 12 hits and 6 unmatched events. See the linked workflow run for that separate result.
+The GitHub Actions workflow runs the same suite against native PostgreSQL and sends these 18 log lines over TCP through the complete Docker stack. Its TCP gate requires exactly 18 stored events, 12 hits and 6 unmatched events. **PASS:** [GitHub Actions run 39026651203](https://github.com/kbedford/JLS/actions/runs/39026651203) completed successfully, including native PostgreSQL tests, Logstash configuration validation, full Docker stack startup, and the exact TCP ingestion counts above. Tested code commit: `04c66fd968ca2cc87894a1a11707a085e14c1820`.
 
 | Case | Dummy scenario | Expected / observed | Result |
 | --- | --- | --- | --- |
