@@ -38,7 +38,7 @@ services:
       RETENTION_DAYS: ${RETENTION_DAYS:-30}
     volumes:
       - type: bind
-        source: ${CATALOGUE_DIR:-./private-catalogue}
+        source: ${CATALOGUE_DIR:-./catalogue}
         target: /catalogue
         read_only: true
         bind:

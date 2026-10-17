@@ -18,7 +18,7 @@ cd JLS
 python3 tools/setup.py
 ```
 
-Place the separately supplied private `catalogue.json` in `private-catalogue/catalogue.json`. Keep the directory readable by container UID 10001 and restrict access to the host itself. The catalogue contains confidential technical guidance and must not be committed or put in the image. `.gitignore` excludes it and Word documents.
+The repository includes all **98 error rules** from Health Check FPC Errors v1.3 in [`catalogue/catalogue.json`](catalogue/catalogue.json). The default configuration mounts this catalogue and imports it into PostgreSQL automatically. No separate catalogue download is required. Keep the directory readable by container UID 10001. Source notices and provenance are retained; publication does not change the source licensing terms. Word source files and local private overrides remain excluded from Git.
 
 Edit `.env` to set `SYSLOG_BIND` to the collector's management IP and `SYSLOG_TIMEZONE` to the timezone used by devices without explicit timestamp offsets. Restrict incoming ports to the intended device network. The default bind is localhost for initial testing. Credentials are independently generated; inspect `.env` locally for the Grafana admin password.
 
@@ -32,7 +32,7 @@ Visit http://localhost:3003 and open **JLS / JLS Error Monitoring**. On a remote
 
 On first start the application validates the entire catalogue, creates the `jls` schema tables, and imports the rules transactionally. An absent, invalid, or empty active catalogue fails readiness rather than silently monitoring nothing. On later starts an unchanged catalogue is a no-op; a changed catalogue replaces only its own rules. Events retain their original rule snapshots.
 
-For a public synthetic-only demonstration, copy `examples/catalogue.json` into `private-catalogue/catalogue.json` and set `CATALOGUE_ID=synthetic-example` in `.env`. This demo contains no Juniper fault catalogue.
+For a synthetic-only demonstration, create `private-catalogue/`, copy `examples/catalogue.json` into `private-catalogue/catalogue.json` and set `CATALOGUE_DIR=./private-catalogue` and `CATALOGUE_ID=synthetic-example` in `.env`. This demo contains no Juniper fault catalogue.
 
 ## Ports and delivery
 
@@ -53,7 +53,7 @@ Messages are limited to 64 KiB in the matcher. Malformed envelopes are stored in
 
 ## Catalogue maintenance
 
-The private package includes the extracted catalogue, review overrides, audit and PostgreSQL seed SQL. The canonical application import is JSON, with validation before writes. Full technical text, conditional actions, cited KB/PR identifiers, version/platform notes, source paragraph locations, original document checksum, and regression examples are retained. KB/PR references are citations, not a claim that each entry has an independently verified primary KB.
+The bundled JSON contains the 98 extracted rules. The separately supplied extraction package also includes review overrides, audit and PostgreSQL seed SQL. The canonical application import is JSON, with validation before writes. Full technical text, conditional actions, cited KB/PR identifiers, version/platform notes, source paragraph locations, original document checksum, and regression examples are retained. KB/PR references are citations, not a claim that each entry has an independently verified primary KB.
 
 ```sh
 # Validate a replacement without changing PostgreSQL:
@@ -62,7 +62,7 @@ docker compose exec scanner python -m jls validate /catalogue/catalogue.json
 docker compose exec scanner python -m jls import /catalogue/catalogue.json
 ```
 
-Mount the directory, so atomically replacing its catalogue file is visible to containers. Restart the service if changing the catalogue ID. Direct SQL changes to patterns are validated on refresh; invalid changes stop readiness and trigger retries. Update the private JSON as well, since subsequent changed-file imports are authoritative.
+Mount the directory, so atomically replacing its catalogue file is visible to containers. Restart the service if changing the catalogue ID. Direct SQL changes to patterns are validated on refresh; invalid changes stop readiness and trigger retries. Update the configured JSON file as well, since subsequent changed-file imports are authoritative.
 
 Occurrence groups show repeated signatures per device/FPC/PFE/ASIC in 15-minute windows. The timeline helps inspect preceding and concurrent events. These are triage aids, not automatic root-cause or service-impact determinations. Source guidance containing version-specific, conditional, or contradictory statements must be evaluated by the operator. Platform/version notes are context; the matcher does not enforce applicability without reliable inventory.
 
@@ -103,10 +103,10 @@ pip install -r requirements-dev.txt
 pytest -q
 # Use only an isolated, disposable test database: integration fixtures truncate jls tables.
 JLS_TEST_DSN=postgresql://postgres:password@localhost/jls_test pytest -q
-JLS_CATALOGUE_TEST_PATH=private-catalogue/catalogue.json pytest -q
+JLS_CATALOGUE_TEST_PATH=catalogue/catalogue.json pytest -q
 ```
 
-Tests cover matching, timestamp parsing, regex validation/timeouts, authentication, quarantine, event replay, database transactions, catalogue updates, retention and deployment contracts. CI additionally validates Logstash configuration and starts the Docker stack with synthetic data to test TCP-to-database ingestion. Private catalogue data never enters public CI.
+Tests cover matching, timestamp parsing, regex validation/timeouts, authentication, quarantine, event replay, database transactions, catalogue updates, retention and deployment contracts. CI additionally validates Logstash configuration and starts the Docker stack with synthetic data to test TCP-to-database ingestion. CI also validates every bundled rule against its regression examples.
 
 To regenerate a private catalogue after revising its Word source:
 

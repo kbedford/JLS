@@ -21,12 +21,14 @@ jobs:
       - run: pip install -r requirements-dev.txt
       - run: pytest -q
         env:
+          JLS_CATALOGUE_TEST_PATH: catalogue/catalogue.json
           JLS_TEST_DSN: postgresql://postgres:test-only-password@localhost:5432/jls_test
       - name: Validate pipeline configuration
         run: docker run --rm -e INGEST_TOKEN=synthetic-test-token-at-least-32-characters -v "$PWD/config/logstash/pipeline.conf:/usr/share/logstash/pipeline/logstash.conf:ro" docker.elastic.co/logstash/logstash:8.19.13 --config.test_and_exit
       - name: Start isolated stack with synthetic catalogue
         run: |
           python tools/setup.py
+          echo "CATALOGUE_DIR=./private-catalogue" >> .env
           mkdir private-catalogue
           cp examples/catalogue.json private-catalogue/catalogue.json
           docker compose up --build -d --wait --wait-timeout 240
