@@ -1,0 +1,12 @@
+http.host: "127.0.0.1"
+xpack.monitoring.enabled: false
+pipeline.ecs_compatibility: v8
+pipeline.workers: 1
+pipeline.ordered: true
+pipeline.batch.size: 125
+queue.type: persisted
+queue.max_bytes: 1gb
+queue.checkpoint.writes: 1
+queue.checkpoint.acks: 1
+path.data: /usr/share/logstash/data
+log.level: warn

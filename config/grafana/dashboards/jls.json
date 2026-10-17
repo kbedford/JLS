@@ -1,0 +1,324 @@
+{
+  "uid": "jls-operations",
+  "title": "JLS Error Monitoring",
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "30s",
+  "timezone": "utc",
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "tags": [
+    "JLS"
+  ],
+  "panels": [
+    {
+      "id": 1,
+      "title": "Matched events",
+      "type": "stat",
+      "datasource": {
+        "type": "postgres",
+        "uid": "jls-postgres"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 6,
+        "h": 4
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "rawSql": "SELECT count(DISTINCT event_id) AS events FROM jls.hit_details WHERE $__timeFilter(event_time)",
+          "format": "table",
+          "editorMode": "code"
+        }
+      ],
+      "options": {
+        "showHeader": true
+      }
+    },
+    {
+      "id": 2,
+      "title": "Major or fatal CM alarms",
+      "type": "stat",
+      "datasource": {
+        "type": "postgres",
+        "uid": "jls-postgres"
+      },
+      "gridPos": {
+        "x": 6,
+        "y": 0,
+        "w": 6,
+        "h": 4
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "rawSql": "SELECT count(*) AS events FROM jls.events WHERE cm_severity IN ('major','fatal') AND $__timeFilter(event_time)",
+          "format": "table",
+          "editorMode": "code"
+        }
+      ],
+      "options": {
+        "showHeader": true
+      }
+    },
+    {
+      "id": 3,
+      "title": "Events with incomplete evaluation",
+      "type": "stat",
+      "datasource": {
+        "type": "postgres",
+        "uid": "jls-postgres"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 0,
+        "w": 6,
+        "h": 4
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "rawSql": "SELECT count(*) AS events FROM jls.events WHERE evaluation_errors <> '[]'::jsonb AND $__timeFilter(stored_at)",
+          "format": "table",
+          "editorMode": "code"
+        }
+      ],
+      "options": {
+        "showHeader": true
+      }
+    },
+    {
+      "id": 4,
+      "title": "Quarantined inputs",
+      "type": "stat",
+      "datasource": {
+        "type": "postgres",
+        "uid": "jls-postgres"
+      },
+      "gridPos": {
+        "x": 18,
+        "y": 0,
+        "w": 6,
+        "h": 4
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "rawSql": "SELECT count(*) AS events FROM jls.rejected_events WHERE $__timeFilter(received_at)",
+          "format": "table",
+          "editorMode": "code"
+        }
+      ],
+      "options": {
+        "showHeader": true
+      }
+    },
+    {
+      "id": 5,
+      "title": "Recent matches and source guidance",
+      "type": "table",
+      "datasource": {
+        "type": "postgres",
+        "uid": "jls-postgres"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 4,
+        "w": 24,
+        "h": 12
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "rawSql": "SELECT event_time,device,source_ip,fpc,pfe,asic,cm_severity,syslog_severity,title,message,kb_references::text,pr_references::text,guidance::text,version_notes::text,timestamp_source FROM jls.hit_details WHERE $__timeFilter(event_time) AND device IN (${device:sqlstring}) ORDER BY event_time DESC LIMIT 500",
+          "format": "table",
+          "editorMode": "code"
+        }
+      ],
+      "options": {
+        "showHeader": true
+      }
+    },
+    {
+      "id": 6,
+      "title": "Repeated signatures by component in 15 minute windows",
+      "type": "table",
+      "datasource": {
+        "type": "postgres",
+        "uid": "jls-postgres"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 16,
+        "w": 24,
+        "h": 9
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "rawSql": "SELECT first_seen,last_seen,device,fpc,pfe,asic,title,occurrences FROM jls.occurrence_groups WHERE $__timeFilter(first_seen) AND device IN (${device:sqlstring}) ORDER BY occurrences DESC LIMIT 200",
+          "format": "table",
+          "editorMode": "code"
+        }
+      ],
+      "options": {
+        "showHeader": true
+      }
+    },
+    {
+      "id": 7,
+      "title": "Event timeline for correlation \u2014 first event is not proof of cause",
+      "type": "table",
+      "datasource": {
+        "type": "postgres",
+        "uid": "jls-postgres"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 25,
+        "w": 24,
+        "h": 10
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "rawSql": "SELECT event_time,device,fpc,pfe,asic,cm_severity,error_code,stream,message FROM jls.events WHERE $__timeFilter(event_time) AND device IN (${device:sqlstring}) ORDER BY event_time ASC LIMIT 1000",
+          "format": "table",
+          "editorMode": "code"
+        }
+      ],
+      "options": {
+        "showHeader": true
+      }
+    },
+    {
+      "id": 8,
+      "title": "Catalogue versions",
+      "type": "table",
+      "datasource": {
+        "type": "postgres",
+        "uid": "jls-postgres"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 35,
+        "w": 24,
+        "h": 5
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "rawSql": "SELECT catalogue_id,version,updated_at,(SELECT count(*) FROM jls.error_patterns p WHERE p.catalogue_id=c.catalogue_id AND p.enabled) AS active_rules FROM jls.catalogues c",
+          "format": "table",
+          "editorMode": "code"
+        }
+      ],
+      "options": {
+        "showHeader": true
+      }
+    },
+    {
+      "id": 9,
+      "title": "Evaluation failures requiring replay",
+      "type": "table",
+      "datasource": {
+        "type": "postgres",
+        "uid": "jls-postgres"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 40,
+        "w": 24,
+        "h": 6
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "rawSql": "SELECT stored_at,device,event_id,evaluation_errors::text,message FROM jls.events WHERE evaluation_errors <> '[]'::jsonb ORDER BY stored_at DESC LIMIT 100",
+          "format": "table",
+          "editorMode": "code"
+        }
+      ],
+      "options": {
+        "showHeader": true
+      }
+    },
+    {
+      "id": 10,
+      "title": "Quarantine reasons",
+      "type": "table",
+      "datasource": {
+        "type": "postgres",
+        "uid": "jls-postgres"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 46,
+        "w": 24,
+        "h": 6
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "rawSql": "SELECT received_at,reason FROM jls.rejected_events ORDER BY received_at DESC LIMIT 100",
+          "format": "table",
+          "editorMode": "code"
+        }
+      ],
+      "options": {
+        "showHeader": true
+      }
+    },
+    {
+      "id": 11,
+      "title": "Collector receipt timeline",
+      "type": "table",
+      "datasource": {
+        "type": "postgres",
+        "uid": "jls-postgres"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 52,
+        "w": 24,
+        "h": 8
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "rawSql": "SELECT stored_at,received_at,event_time,device,timestamp_source,parse_warnings::text,message FROM jls.events WHERE $__timeFilter(stored_at) ORDER BY stored_at DESC LIMIT 200",
+          "format": "table",
+          "editorMode": "code"
+        }
+      ],
+      "options": {
+        "showHeader": true
+      }
+    }
+  ],
+  "templating": {
+    "list": [
+      {
+        "name": "device",
+        "label": "Device",
+        "type": "query",
+        "datasource": {
+          "type": "postgres",
+          "uid": "jls-postgres"
+        },
+        "query": "SELECT DISTINCT device FROM jls.events ORDER BY device",
+        "refresh": 1,
+        "multi": true,
+        "includeAll": true,
+        "current": {
+          "text": "All",
+          "value": "$__all"
+        }
+      }
+    ]
+  }
+}

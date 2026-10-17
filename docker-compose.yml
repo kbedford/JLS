@@ -1,58 +1,121 @@
-version: '3.8'
-
+name: jls
+x-logging: &logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "3"
 services:
   postgres:
-    image: postgres
+    image: postgres:17.9-bookworm
     environment:
-      POSTGRES_DB: postgres
+      POSTGRES_DB: jls
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: newpassword
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Run python tools/setup.py}
+      APP_DB_PASSWORD: ${DB_PASSWORD:?Run python tools/setup.py}
+      GRAFANA_DB_PASSWORD: ${GRAFANA_DB_PASSWORD:?Run python tools/setup.py}
     volumes:
-      - /home/python-logs-scanner/data/postgres:/var/lib/postgresql/data
+      - postgres-data:/var/lib/postgresql/data
+      - ./config/postgres-init.sh:/docker-entrypoint-initdb.d/10-jls.sh:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d jls"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+    restart: unless-stopped
+    networks: [backend]
+    logging: *logging
+  scanner:
+    build: ./junos-fpc-errors
+    environment:
+      DB_HOST: postgres
+      DB_NAME: jls
+      DB_USER: jls_app
+      DB_PASSWORD: ${DB_PASSWORD:?Run python tools/setup.py}
+      INGEST_TOKEN: ${INGEST_TOKEN:?Run python tools/setup.py}
+      CATALOGUE_PATH: /catalogue/catalogue.json
+      CATALOGUE_ID: ${CATALOGUE_ID:-health-check-fpc-errors}
+      SYSLOG_TIMEZONE: ${SYSLOG_TIMEZONE:-UTC}
+      RETENTION_DAYS: ${RETENTION_DAYS:-30}
+    volumes:
+      - type: bind
+        source: ${CATALOGUE_DIR:-./private-catalogue}
+        target: /catalogue
+        read_only: true
+        bind:
+          create_host_path: false
+    depends_on:
+      postgres: {condition: service_healthy}
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8080/health',timeout=3)"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 90s
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    restart: unless-stopped
+    networks: [backend]
+    logging: *logging
+  logstash:
+    image: docker.elastic.co/logstash/logstash:8.19.13
+    environment:
+      INGEST_TOKEN: ${INGEST_TOKEN:?Run python tools/setup.py}
+      LS_JAVA_OPTS: -Xms512m -Xmx512m
+    volumes:
+      - ./config/logstash/pipeline.conf:/usr/share/logstash/pipeline/logstash.conf:ro
+      - ./config/logstash/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
+      - logstash-data:/usr/share/logstash/data
     ports:
-      - "5432:5432"
-    networks:
-      - python-logs-scanner_log-net
-
+      - "${SYSLOG_BIND:-127.0.0.1}:514:5514/udp"
+      - "${SYSLOG_BIND:-127.0.0.1}:5514:5514/udp"
+      - "${SYSLOG_BIND:-127.0.0.1}:5514:5514/tcp"
+    depends_on:
+      scanner: {condition: service_healthy}
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c '</dev/tcp/127.0.0.1/5514'"]
+      interval: 15s
+      timeout: 5s
+      retries: 8
+      start_period: 120s
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    restart: unless-stopped
+    stop_grace_period: 60s
+    networks: [backend]
+    logging: *logging
   grafana:
-    image: grafana/grafana
-    user: "472:472"
-    depends_on:
-      - postgres
+    image: grafana/grafana:12.4.2
     environment:
-      GF_SECURITY_ADMIN_USER: 'admin'
-      GF_SECURITY_ADMIN_PASSWORD: 'admin'
-      GF_PATHS_DATA: '/var/lib/grafana'
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:?Run python tools/setup.py}
+      GF_USERS_ALLOW_SIGN_UP: "false"
+      GF_AUTH_ANONYMOUS_ENABLED: "false"
+      GF_ANALYTICS_REPORTING_ENABLED: "false"
+      GF_ANALYTICS_CHECK_FOR_UPDATES: "false"
+      GRAFANA_DB_PASSWORD: ${GRAFANA_DB_PASSWORD:?Run python tools/setup.py}
     volumes:
-      - /home/python-logs-scanner/data/grafana:/var/lib/grafana
+      - grafana-data:/var/lib/grafana
+      - ./config/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./config/grafana/dashboards:/var/lib/grafana/dashboards:ro
     ports:
-      - "3003:3000"
-    networks:
-      - python-logs-scanner_log-net
-
-  juno_fpc_errors:
-    build:
-      context: ./junos-fpc-errors
-    environment:
-      - CSV_FILE_PATH=/var/tmp/test1.csv
-      - LOG_FILE_PATH=/var/log/logstash/syslog.log
-      - DB_HOST=postgres
-    volumes:
-      - /var/tmp:/var/tmp
-      - /var/log:/var/log
-      - /etc/localtime:/etc/localtime:ro
-      - /etc/timezone:/etc/timezone:ro
-    ports:
-      - "514:514/udp"
-      - "5514:5514/udp"
-      - "8000:8000"
+      - "127.0.0.1:3003:3000"
     depends_on:
-      - postgres
-      - grafana
-    networks:
-      - python-logs-scanner_log-net
-
+      scanner: {condition: service_healthy}
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://localhost:3000/api/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 6
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    restart: unless-stopped
+    networks: [backend]
+    logging: *logging
+volumes:
+  postgres-data:
+  grafana-data:
+  logstash-data:
 networks:
-  python-logs-scanner_log-net:
+  backend:
     driver: bridge
-

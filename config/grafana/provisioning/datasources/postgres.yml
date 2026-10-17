@@ -1,0 +1,17 @@
+apiVersion: 1
+datasources:
+  - name: JLS PostgreSQL
+    uid: jls-postgres
+    type: postgres
+    access: proxy
+    url: postgres:5432
+    user: jls_grafana
+    secureJsonData:
+      password: $GRAFANA_DB_PASSWORD
+    jsonData:
+      database: jls
+      sslmode: disable
+      postgresVersion: 1700
+      timescaledb: false
+    isDefault: true
+    editable: false

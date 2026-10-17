@@ -1,0 +1,11 @@
+.env
+secrets/
+private-catalogue/
+*.docx
+*.db
+*.dump
+__pycache__/
+.pytest_cache/
+.venv/
+results/
+data/

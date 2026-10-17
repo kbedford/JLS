@@ -1,0 +1,7 @@
+services:
+  logstash:
+    volumes:
+      - ./config/logstash/tls.conf:/usr/share/logstash/pipeline/tls.conf:ro
+      - ./secrets/tls:/certs:ro
+    ports:
+      - "${SYSLOG_BIND:-127.0.0.1}:6514:6514/tcp"

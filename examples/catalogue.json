@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "catalogue_id": "synthetic-example",
+  "version": "1",
+  "source": {
+    "classification": "synthetic"
+  },
+  "rules": [
+    {
+      "id": "synthetic-parity",
+      "title": "Synthetic test event",
+      "pattern": "TESTCHIP\\(\\d+\\).*parity error",
+      "enabled": true,
+      "positive_examples": [
+        "TESTCHIP(1): parity error"
+      ],
+      "negative_examples": [
+        "TESTCHIP(1): parity corrected"
+      ],
+      "kb_references": [],
+      "pr_references": [],
+      "sources": [
+        {
+          "actions": "Synthetic data for installation testing only."
+        }
+      ],
+      "version_notes": []
+    }
+  ]
+}
