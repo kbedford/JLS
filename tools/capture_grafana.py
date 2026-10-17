@@ -59,6 +59,7 @@ with sync_playwright() as p:
     response=context.request.post(base+'/login',data={'user':'admin','password':values['GRAFANA_ADMIN_PASSWORD']})
     assert response.ok, f'Grafana login failed: {response.status}'
     page=context.new_page()
+    page.on('pageerror', lambda error: print('Browser error:', str(error), flush=True))
     def check_response(response):
         if '/api/ds/query' in response.url:
             if response.status!=200: errors.append(f'datasource HTTP {response.status}')
@@ -70,7 +71,14 @@ with sync_playwright() as p:
     page.on('response',check_response)
     def capture(filename,path,text):
         page.goto(base+path,wait_until='domcontentloaded')
-        page.get_by_text(text,exact=False).first.wait_for(state='visible',timeout=90000)
+        try:
+            page.get_by_text(text,exact=False).first.wait_for(state='visible',timeout=45000)
+        except Exception:
+            print('Capture failed at',page.url,flush=True)
+            print('Visible page:',page.locator('body').inner_text()[:6000],flush=True)
+            print('Query errors:',errors,flush=True)
+            page.screenshot(path=str(OUT/'diagnostic.png'))
+            raise
         page.wait_for_timeout(2000)  # Allow charts/fonts to finish painting after data appears.
         assert not errors, errors
         page.screenshot(path=str(OUT/filename),animations='disabled')
